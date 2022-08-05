@@ -9,7 +9,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
-
+//每个客户连接不停地向服务器发送这个请求
 static const char* request = "GET http://localhost/index.html HTTP/1.1\r\nConnection: keep-alive\r\n\r\nxxxxxxxxxxxx";
 
 int setnonblocking( int fd )
@@ -29,6 +29,7 @@ void addfd( int epoll_fd, int fd )
     setnonblocking( fd );
 }
 
+//向服务器写入len字节的数据
 bool write_nbytes( int sockfd, const char* buffer, int len )
 {
     int bytes_write = 0;
@@ -53,7 +54,7 @@ bool write_nbytes( int sockfd, const char* buffer, int len )
         }   
     }   
 }
-
+//从服务器读取数据
 bool read_once( int sockfd, char* buffer, int len )
 {
     int bytes_read = 0;
@@ -71,7 +72,7 @@ bool read_once( int sockfd, char* buffer, int len )
 
     return true;
 }
-
+//向服务器发起num个TCP连接，可以通过改变num来调整测试压力
 void start_conn( int epoll_fd, int num, const char* ip, int port )
 {
     int ret = 0;
